@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace RandomCity.Migrations
+namespace RandomCityApi.Migrations
 {
     public partial class InitialCreate : Migration
     {

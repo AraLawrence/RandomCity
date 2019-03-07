@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "RandomCity": {
+    "RandomCityApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",

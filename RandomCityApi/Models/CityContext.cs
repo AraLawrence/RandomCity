@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace RandomCity.Models
+namespace RandomCityApi.Models
 {
     public class CityContext : DbContext
     {

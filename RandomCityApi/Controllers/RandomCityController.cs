@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using RandomCity.Models;
-using RandomCity.Services;
+using RandomCityApi.Models;
+using RandomCityApi.Services;
 
-namespace RandomCity.Controllers
+namespace RandomCityApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RandomCityController : ControllerBase
+    public class RandomCityApiController : ControllerBase
     {
         private readonly CityContext _context;
         private RetrieveCityData getData = new RetrieveCityData();
-        public RandomCityController(CityContext context)
+        public RandomCityApiController(CityContext context)
         {
             _context = context;
         }
@@ -29,24 +29,27 @@ namespace RandomCity.Controllers
                 city.Population = cityData.population;
                 city.Latitude = cityData.latitude;
                 city.Longitude = cityData.longitude;
+                // These don't necessarily need to come back on this call
+                city.Summary = cityData.summary;
+                city.Area = cityData.area;
                 await _context.SaveChangesAsync();
             }
             return city;
         }
 
-        // GET api/randomcity
+        // GET api/RandomCityApi
         // Add an ID endpoint, that way you can test the DB access
         // functionality, and make sure you're not calling GetPopulation
         [HttpGet]
-        public async Task<ActionResult<City>> GetRandomCity()
+        public async Task<ActionResult<City>> GetRandomCityApi()
         {
             var selectId = new Random().Next(1, _context.Cities.Count());
             return await this.GetCityInfo(selectId);
         }
 
-        // GET api/randomcity/501
+        // GET api/RandomCityApi/501
         [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetRandomCityId(int id)
+        public async Task<ActionResult<City>> GetRandomCityApiId(int id)
         {
             return await this.GetCityInfo(id);
         }

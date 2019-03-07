@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RandomCity.Models;
+using RandomCityApi.Models;
 
-namespace RandomCity.Migrations
+namespace RandomCityApi.Migrations
 {
     [DbContext(typeof(CityContext))]
     [Migration("20190301201542_InitialCreate")]
@@ -21,7 +21,7 @@ namespace RandomCity.Migrations
                 .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("RandomCity.Models.City", b =>
+            modelBuilder.Entity("RandomCityApi.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RandomCity.Models;
+using RandomCityApi.Models;
 
-namespace RandomCity
+namespace RandomCityApi
 {
     public class Startup
     {

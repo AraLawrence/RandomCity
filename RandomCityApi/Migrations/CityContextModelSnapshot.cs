@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RandomCity.Models;
+using RandomCityApi.Models;
 
-namespace RandomCity.Migrations
+namespace RandomCityApi.Migrations
 {
     [DbContext(typeof(CityContext))]
     partial class CityContextModelSnapshot : ModelSnapshot
@@ -19,10 +19,12 @@ namespace RandomCity.Migrations
                 .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("RandomCity.Models.City", b =>
+            modelBuilder.Entity("RandomCityApi.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("Area");
 
                     b.Property<string>("Country");
 
@@ -35,6 +37,8 @@ namespace RandomCity.Migrations
                     b.Property<int?>("Population");
 
                     b.Property<string>("Subcountry");
+
+                    b.Property<string>("Summary");
 
                     b.HasKey("Id");
 

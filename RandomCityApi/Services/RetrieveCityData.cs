@@ -1,4 +1,4 @@
-using RandomCity.Models;
+using RandomCityApi.Models;
 using System;
 using System.Linq;
 using System.Net;
@@ -7,15 +7,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RandomCity.Services;
+using RandomCityApi.Services;
 
-namespace RandomCity.Services
+namespace RandomCityApi.Services
 {
     public class CityData
     {
         public int population;
         public decimal longitude;
         public decimal latitude;
+        public string summary;
+        public int area;
     }
     public class RetrieveCityData
     {
@@ -48,12 +50,20 @@ namespace RandomCity.Services
                 returnData.longitude = dataFields.longitude != null
                     ? (decimal)dataFields.longitude : 0;
 
+
+                // Sometimes you get zeros for all fields
+                // there needs to be a way to handle that
                 
                 // Sometimes we dont get a population, try to find that info on wikipedia
                 if (returnData.population == 0)
                 {
                     returnData.population = await getWikiData.GetPopulationFallback(city);
                 }
+
+                // This probably does not need to be awaited once it's debugged
+                var extraData = await getWikiData.GetWikiCityData(city);
+                returnData.summary = extraData.summary;
+                returnData.area = extraData.area;
             }
             return returnData;
         }
