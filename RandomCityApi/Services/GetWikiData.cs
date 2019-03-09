@@ -1,11 +1,8 @@
 using RandomCityApi.Models;
 using System;
-using System.Text;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -19,6 +16,7 @@ namespace RandomCityApi.Services
     public class GetWikiData
     {
         private WebClient client = new WebClient();
+        private ProcessWikiData processData = new ProcessWikiData();
         private string wikiApi = "https://en.wikipedia.org/w/api.php";
         
         // Return the text from a wikipedia page
@@ -79,28 +77,8 @@ namespace RandomCityApi.Services
             {
                 // Do something that makes sense here
             }
-
-            // Get and process area
-            string areaPattern = @"Area.*?Total</th><td>(.*?)\&.*?(km|mi)";
-            Match areaMatch = new Regex(areaPattern).Match(wikiPage);
-            if (areaMatch.Success && areaMatch.Groups[1] != null && areaMatch.Groups[2] != null)
-            {
-                double area = double.Parse(areaMatch.Groups[1].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands);
-                string unit = areaMatch.Groups[2].Value;
-                double areaConvert = unit == "km" ? area * 0.62 : area;
-                wikiData.area = Convert.ToInt32(areaConvert);
-            }
-
-            // Get and process summary
-            string summaryPattern = @"<p>(.*?)\n";
-            Match summaryMatch = new Regex(summaryPattern).Match(wikiPage);
-            if (summaryMatch.Success && summaryMatch.Groups[1] != null)
-            {
-                string citySummary = summaryMatch.Groups[1].Value;
-                // Not quite on &#123;
-                string formattedSummary = Regex.Replace(citySummary, "<.*?>|&#/d*?;", String.Empty);
-                wikiData.summary = formattedSummary;
-            }
+            wikiData.area = processData.MatchArea(wikiPage);
+            wikiData.summary = processData.MatchSummary(wikiPage);
 
             return wikiData;
         }
@@ -113,11 +91,7 @@ namespace RandomCityApi.Services
                 return 0;
             }
 
-            string popPattern = @"Population.*?Total</th><td>(.*?)</td>";
-            Match popMatch = new Regex(popPattern).Match(wikiPage);
-            int rtnVal = popMatch.Success && popMatch.Groups[1] != null
-                ? int.Parse(popMatch.Groups[1].Value, NumberStyles.AllowThousands) : 0;
-            return rtnVal;
+            return processData.MatchPopulation(wikiPage);
         }
     }
 }
