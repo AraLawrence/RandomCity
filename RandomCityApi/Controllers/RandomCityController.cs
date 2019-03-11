@@ -15,14 +15,14 @@ namespace RandomCityApi.Controllers
     {
         private readonly CityContext _context;
         private RetrieveCityData getData = new RetrieveCityData();
+        private GetWikiData getWikiData = new GetWikiData();
         public RandomCityApiController(CityContext context)
         {
             _context = context;
         }
 
-        private async Task<ActionResult<City>> GetCityInfo(int id)
+        private async Task GetCityInfo(City city)
         {
-            var city = await _context.Cities.FindAsync(id);
             if (city.Population == 0 || city.Latitude == 0 || city.Longitude == 0)
             {
                 var cityData = await getData.GetCityData(city);
@@ -34,24 +34,39 @@ namespace RandomCityApi.Controllers
                 city.Area = cityData.area;
                 await _context.SaveChangesAsync();
             }
-            return city;
+        }
+
+        public async Task GetSummaryData(City city)
+        {
+            if (city.Summary == null)
+            {
+                var sumData = await getWikiData.GetWikiCityData(city);
+                city.Summary = sumData.summary;
+                city.Area = sumData.area;
+                await _context.SaveChangesAsync();
+            }
         }
 
         // GET api/RandomCityApi
         // Add an ID endpoint, that way you can test the DB access
         // functionality, and make sure you're not calling GetPopulation
         [HttpGet]
-        public async Task<ActionResult<City>> GetRandomCityApi()
+        public async Task<ActionResult<City>> GetRandomCity()
         {
             var selectId = new Random().Next(1, _context.Cities.Count());
-            return await this.GetCityInfo(selectId);
+            var city = await _context.Cities.FindAsync(selectId);
+            var tasks = new List<Task>();
+            tasks.Add(Task.Run(() => this.GetCityInfo(city)));
+            tasks.Add(Task.Run(() => this.GetSummaryData(city)));
+            await Task.WhenAll(tasks);
+            return city;
         }
 
         // GET api/RandomCityApi/501
         [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetRandomCityApiId(int id)
+        public async Task<ActionResult<City>> GetRandomCityId(int id)
         {
-            return await this.GetCityInfo(id);
+            return await _context.Cities.FindAsync(id);
         }
     }
 }

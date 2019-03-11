@@ -36,6 +36,7 @@ namespace RandomCityApi.Services
             // Only first paragraph needs processing
             int startIdx = wikiPage.IndexOf("<p>");
             int endIdx = wikiPage.IndexOf("</p>");
+            if (endIdx < startIdx) endIdx = wikiPage.IndexOf("</p><p>");
 
             StringBuilder summary = new StringBuilder();
             bool skipChars = false;
@@ -52,6 +53,9 @@ namespace RandomCityApi.Services
             summary.Replace("\n", String.Empty);
             summary.Replace("&#32;", String.Empty);
             summary.Replace("&#160;", String.Empty);
+            summary.Replace("&#xfeff;", String.Empty);
+            summary.Replace("&gt", "<");
+            summary.Replace("&lt", ">");
 
             string rtnString = summary.ToString();
             rtnString = Regex.Replace(rtnString, "&#91;.*&#93;", String.Empty);

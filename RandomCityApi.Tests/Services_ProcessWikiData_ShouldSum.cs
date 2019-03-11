@@ -59,7 +59,6 @@ namespace RandomCityApi.Tests.Services
         [MemberData(nameof(GetCities))]
         public void ShoudProcessLargeCities(string city)
         {
-            // Getting empty strings here
             string wikiSummary = _processData.MatchSummary(city);
             Assert.IsType<string>(wikiSummary);
             Assert.NotEqual(0, wikiSummary.Length);

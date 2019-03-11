@@ -59,11 +59,6 @@ namespace RandomCityApi.Services
                 {
                     returnData.population = await getWikiData.GetPopulationFallback(city);
                 }
-
-                // This probably does not need to be awaited once it's debugged
-                var extraData = await getWikiData.GetWikiCityData(city);
-                returnData.summary = extraData.summary;
-                returnData.area = extraData.area;
             }
             return returnData;
         }
