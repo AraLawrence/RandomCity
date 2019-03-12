@@ -12,12 +12,15 @@ namespace RandomCityApi.Services
     {
         public int area;
         public string summary;
+        public int population;
+        public string wikiRef;
     }
     public class GetWikiData
     {
         private WebClient client = new WebClient();
         private ProcessWikiData processData = new ProcessWikiData();
         private string wikiApi = "https://en.wikipedia.org/w/api.php";
+        private string wikiUrl = "https://en.wikipedia.org/";
         
         // Return the text from a wikipedia page
         private async Task<int> GetWikiPageId(City city)
@@ -42,14 +45,12 @@ namespace RandomCityApi.Services
             }
         }
 
-        private async Task<string> GetWikiPage(City city)
+        private async Task<string> GetWikiPage(int pageId)
         {
-            int pageId = await this.GetWikiPageId(city);
             if (pageId == 0)
             {
                 return null;
             }
-            System.Console.WriteLine($"Wiki page id is: {pageId}");
 
             List<string> uriParams = new List<string> {
                 "action=parse&", $"pageid={pageId}&", "utf8&", "format=json"
@@ -72,26 +73,36 @@ namespace RandomCityApi.Services
         public async Task<WikiCityData> GetWikiCityData(City city)
         {
             WikiCityData wikiData = new WikiCityData();
-            var wikiPage = await this.GetWikiPage(city);
+            int pageId = await this.GetWikiPageId(city);
+            var wikiPage = await this.GetWikiPage(pageId);
             if (wikiPage == null)
             {
-                // Do something that makes sense here
+                wikiData.area = 0;
+                wikiData.summary = null;
             }
-            wikiData.area = processData.MatchArea(wikiPage);
-            wikiData.summary = processData.MatchSummary(wikiPage);
+            else 
+            {
+                wikiData.area = processData.MatchArea(wikiPage);
+                wikiData.summary = processData.MatchSummary(wikiPage);
+                wikiData.wikiRef = $"{this.wikiUrl}?curid={pageId}";
+            }
 
             return wikiData;
         }
 
-        public async Task<int> GetPopulationFallback(City city)
+        public async Task<WikiCityData> GetPopulationFallback(City city)
         {
-            var wikiPage = await this.GetWikiPage(city);
+            int pageId = await this.GetWikiPageId(city);
+            var wikiPage = await this.GetWikiPage(pageId);
             if (wikiPage == null)
             {
-                return 0;
+                return null;
             }
 
-            return processData.MatchPopulation(wikiPage);
+            WikiCityData wikiData = new WikiCityData();
+            wikiData.population = processData.MatchPopulation(wikiPage);
+            wikiData.wikiRef = $"{this.wikiUrl}?curid={pageId}";
+            return wikiData;
         }
     }
 }

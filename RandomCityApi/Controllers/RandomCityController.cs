@@ -29,9 +29,7 @@ namespace RandomCityApi.Controllers
                 city.Population = cityData.population;
                 city.Latitude = cityData.latitude;
                 city.Longitude = cityData.longitude;
-                // These don't necessarily need to come back on this call
-                city.Summary = cityData.summary;
-                city.Area = cityData.area;
+                city.WikiPop = cityData.wikiPop;
                 await _context.SaveChangesAsync();
             }
         }
@@ -43,6 +41,7 @@ namespace RandomCityApi.Controllers
                 var sumData = await getWikiData.GetWikiCityData(city);
                 city.Summary = sumData.summary;
                 city.Area = sumData.area;
+                city.WikiRef = sumData.wikiRef;
                 await _context.SaveChangesAsync();
             }
         }
@@ -53,12 +52,9 @@ namespace RandomCityApi.Controllers
         [HttpGet]
         public async Task<ActionResult<City>> GetRandomCity()
         {
-            var selectId = new Random().Next(1, _context.Cities.Count());
-            var city = await _context.Cities.FindAsync(selectId);
-            var tasks = new List<Task>();
-            tasks.Add(Task.Run(() => this.GetCityInfo(city)));
-            tasks.Add(Task.Run(() => this.GetSummaryData(city)));
-            await Task.WhenAll(tasks);
+            int selectId = new Random().Next(1, _context.Cities.Count());
+            City city = await _context.Cities.FindAsync(selectId);
+            await this.GetCityInfo(city);
             return city;
         }
 
@@ -66,7 +62,9 @@ namespace RandomCityApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<City>> GetRandomCityId(int id)
         {
-            return await _context.Cities.FindAsync(id);
+            City city = await _context.Cities.FindAsync(id);
+            await this.GetSummaryData(city);
+            return city;
         }
     }
 }

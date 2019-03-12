@@ -36,7 +36,12 @@ namespace RandomCityApi.Services
             // Only first paragraph needs processing
             int startIdx = wikiPage.IndexOf("<p>");
             int endIdx = wikiPage.IndexOf("</p>");
-            if (endIdx < startIdx) endIdx = wikiPage.IndexOf("</p><p>");
+            if (endIdx < startIdx)
+            {
+                endIdx = wikiPage.IndexOf("</p><p>") != -1 ?
+                    // First paragraph if multiple, or first paragraph if only one
+                    wikiPage.IndexOf("</p><p>") : wikiPage.IndexOf("</p>\\n<h2>");
+            }
 
             StringBuilder summary = new StringBuilder();
             bool skipChars = false;
@@ -49,6 +54,8 @@ namespace RandomCityApi.Services
                 if (!skipChars) summary.Append(currChar);
                 if (currChar == Char.Parse(">")) skipChars = false;
             }
+            if (summary.Length == 0) return null;            
+
             summary.Replace("\\n", String.Empty);
             summary.Replace("\n", String.Empty);
             summary.Replace("&#32;", String.Empty);

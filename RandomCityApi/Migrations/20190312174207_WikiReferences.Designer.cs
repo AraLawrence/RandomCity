@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RandomCityApi.Models;
@@ -9,9 +10,10 @@ using RandomCityApi.Models;
 namespace RandomCityApi.Migrations
 {
     [DbContext(typeof(CityContext))]
-    partial class CityContextModelSnapshot : ModelSnapshot
+    [Migration("20190312174207_WikiReferences")]
+    partial class WikiReferences
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -47,10 +47,21 @@ namespace RandomCityApi.Tests.Services
             Assert.DoesNotContain(".&#93;", _wikiData);
         }
 
+        // MatchSummary should return a summary for a page with only
+        // one paragraph
+        [Fact]
+        public void ShouldSumSingleParagraph()
+        {
+            string krachrodTxt = System.IO.File.ReadAllText("../../../WikiKrachrod.txt");
+            string wikiSummary = _processData.MatchSummary(krachrodTxt);
+            Assert.IsType<string>(wikiSummary);
+            Assert.NotEqual(0, wikiSummary.Length);
+        }
+
         public static IEnumerable<object[]> GetCities()
         {
-            yield return new object[] { System.IO.File.ReadAllText("../../../WikiTokyo.txt")};
-            yield return new object[] { System.IO.File.ReadAllText("../../../WikiAmsterdam.txt")};
+            yield return new object[] { System.IO.File.ReadAllText("../../../WikiTokyo.txt") };
+            yield return new object[] { System.IO.File.ReadAllText("../../../WikiAmsterdam.txt") };
             yield return new object[] { System.IO.File.ReadAllText("../../../WikiNyc.txt") };
         }
 

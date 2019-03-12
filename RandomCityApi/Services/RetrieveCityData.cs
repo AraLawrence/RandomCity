@@ -14,9 +14,11 @@ namespace RandomCityApi.Services
     public class CityData
     {
         public int population;
+        public bool wikiPop;
         public decimal longitude;
         public decimal latitude;
         public string summary;
+        public string wikiRef;
         public int area;
     }
     public class RetrieveCityData
@@ -49,15 +51,20 @@ namespace RandomCityApi.Services
                     ? (decimal)dataFields.latitude : 0;
                 returnData.longitude = dataFields.longitude != null
                     ? (decimal)dataFields.longitude : 0;
-
-
-                // Sometimes you get zeros for all fields
-                // there needs to be a way to handle that
                 
                 // Sometimes we dont get a population, try to find that info on wikipedia
                 if (returnData.population == 0)
                 {
-                    returnData.population = await getWikiData.GetPopulationFallback(city);
+                    var popData = await getWikiData.GetPopulationFallback(city);
+                    if (popData != null && popData.population > 0) {
+                        returnData.population = popData.population;
+                        returnData.wikiRef = popData.wikiRef;
+                        returnData.wikiPop = true;
+                    }
+                }
+                else
+                {
+                    returnData.wikiPop = false;
                 }
             }
             return returnData;

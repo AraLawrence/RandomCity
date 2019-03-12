@@ -9,9 +9,11 @@ namespace RandomCityApi.Models
         public string Country { get; set; }
         public string Subcountry { get; set; }
         public int? Population { get; set; }
+        public bool? WikiPop { get; set; }
         public decimal? Longitude { get; set; }
         public decimal? Latitude { get; set; }
         public string Summary { get; set; }
         public int? Area { get; set; }
+        public string WikiRef { get; set; }
     }
 }
