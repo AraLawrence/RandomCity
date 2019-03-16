@@ -36,7 +36,7 @@ namespace RandomCityApi.Controllers
 
         public async Task GetSummaryData(City city)
         {
-            if (city.Summary == null)
+            if (city.Summary == null || city.Summary == String.Empty)
             {
                 var sumData = await getWikiData.GetWikiCityData(city);
                 city.Summary = sumData.summary;
